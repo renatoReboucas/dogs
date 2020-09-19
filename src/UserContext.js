@@ -1,5 +1,6 @@
-import React from 'react'
-import { TOKEN_POST, USER_GET } from "./api";
+import React,{useEffect} from 'react'
+import { TOKEN_POST, USER_GET, TOKEN_VALIDATE_POST } from "./api";
+import { useNavigate } from 'react-router-dom'
 
 export const UserContext = React.createContext()
 
@@ -8,6 +9,44 @@ export  const UserStorage = ({children}) => {
   const [login, setLogin] = React.useState(null)
   const [load, setLoad] = React.useState(false)
   const [error, setError] = React.useState(null)
+  const navigate = useNavigate()
+  
+    const userLogout = React.useCallback(
+      async function userLogout() {
+        setData(null);
+        setError(null);
+        setLoad(null);
+        setLogin(null);
+        window.localStorage.removeItem("token");
+        navigate("/login");
+      },
+      [navigate],
+    );
+
+  useEffect(() => {
+    async function autoLogin(){
+      const token = window.localStorage.getItem('token')
+      if(token){
+        try {
+          setError(null)
+          setLoad(true)
+          const { url, options } = TOKEN_VALIDATE_POST(token);
+          const res = await fetch(url, options);
+          const json = await res.json();
+          if(!res.ok) throw new Error('Token inválido')
+          console.log(json);
+          await getUser(token)
+        } catch (error) {
+          console.log('DEU RUIM AUTO LOGIN',error);
+          userLogout();
+        } finally{
+          setLoad(false)
+        }
+      }
+    }
+    autoLogin()
+
+  },[userLogout])
 
   async function getUser(token){
     const { url, options } = USER_GET(token);
@@ -23,21 +62,33 @@ export  const UserStorage = ({children}) => {
 
   async function userLogin(username, password){
     // console.log("userLogin", username, password);
+    try {
+      setError(null)
+      setLoad(true)
     const { url, options } = TOKEN_POST({
       username: username,
       password: password,
     });
-    try {
       const tokenRes = await fetch(url, options);
+      if(!tokenRes.ok) throw new Error(`Error: ${tokenRes.statusText}`)
       const { token } = await tokenRes.json();
       window.localStorage.setItem("token", token);
-      getUser(token);
-    } catch (error) {
+      await getUser(token);
+      navigate('/conta')
+    } catch (error) { 
       console.log('DEU RUIM TOKEN:', error);
+      setError(error.message)
+      setLogin(false)
+    } finally{
+      setLoad(false)
     }
   }
 
+
+
   return (
-    <UserContext.Provider value={{userLogin, data}}>{children}</UserContext.Provider>
+    <UserContext.Provider value={{ userLogin, userLogout, data, error, load, login }}>
+      {children}
+    </UserContext.Provider>
   );
 }
