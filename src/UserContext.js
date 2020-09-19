@@ -8,7 +8,7 @@ export  const UserStorage = ({children}) => {
   const [data, setData] = React.useState(null)
   const [login, setLogin] = React.useState(null)
   const [load, setLoad] = React.useState(false)
-  const [error, setError] = React.useState(null)
+  const [erro, setError] = React.useState(null)
   const navigate = useNavigate()
   
     const userLogout = React.useCallback(
@@ -70,7 +70,7 @@ export  const UserStorage = ({children}) => {
       password: password,
     });
       const tokenRes = await fetch(url, options);
-      if(!tokenRes.ok) throw new Error(`Error: ${tokenRes.statusText}`)
+      if(!tokenRes.ok) throw new Error(`Usuário invalido`)
       const { token } = await tokenRes.json();
       window.localStorage.setItem("token", token);
       await getUser(token);
@@ -87,7 +87,7 @@ export  const UserStorage = ({children}) => {
 
 
   return (
-    <UserContext.Provider value={{ userLogin, userLogout, data, error, load, login }}>
+    <UserContext.Provider value={{ userLogin, userLogout, data, erro, load, login }}>
       {children}
     </UserContext.Provider>
   );
