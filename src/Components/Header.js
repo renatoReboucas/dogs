@@ -5,7 +5,7 @@ import {ReactComponent as Dogs} from '../Assets/dogs.svg'
 import {UserContext} from '../UserContext'
 
 function Header(props) {
-  const { data, userLogout } = React.useContext(UserContext);
+  const { data } = React.useContext(UserContext);
   return (
     <header className={styles.header}>
       <nav className={`${styles.nav} container`}>
@@ -15,7 +15,7 @@ function Header(props) {
         {data ? (
           <Link className={styles.login} to="/conta">
             {data.nome}
-            <button onClick={userLogout}>Sair</button>
+
           </Link>
         ) : (
           <Link className={styles.login} to="/login">
