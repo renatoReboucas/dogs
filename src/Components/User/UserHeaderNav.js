@@ -8,27 +8,47 @@ import {ReactComponent as AdicionarFoto} from '../../Assets/adicionar.svg'
 import {ReactComponent as Sair} from '../../Assets/sair.svg'
 
 import styles from "./UserHeaderNav.module.css";
+import UseMedia from '../../Hooks/UseMedia';
 
 export default function UserHeaderNav() {
-  const [mobile, setMobile] = useState(null)
   const {userLogout} = React.useContext(UserContext)
+  const [mobileMenu, setMobileMenu] = React.useState(false)
+
+  const mobile = UseMedia('(max-width: 40rem)')
+  // console.log(`mobile: ${mobile}`);
+
+
   return (
-    <nav className={styles.nav}>
-      <NavLink to="/conta" end activeClassName={styles.active}>
-        <MinhasFotos /> {mobile && "Minhas Fotos"}{" "}
-      </NavLink>
-      <NavLink to="/conta/estatisticas" activeClassName={styles.active}>
-        <Estatisticas />
-        {mobile && "Estatísticas"}
-      </NavLink>
-      <NavLink to="/conta/postar" activeClassName={styles.active}>
-        <AdicionarFoto />
-        {mobile && "Adicionar Foto"}
-      </NavLink>
-      <button onClick={userLogout}>
-        <Sair />
-        {mobile && "Sair"}
-      </button>
-    </nav>
+    <>
+      {mobile && (
+        <button
+          aria-label="Menu"
+          className={`${styles.mobileButton} ${
+            mobileMenu && styles.mobileButtonActive
+          } `}
+          onClick={() => setMobileMenu(!mobileMenu)}
+        ></button>
+      )}
+      <nav className={`
+        ${mobile ? styles.navMobile : styles.nav} 
+        ${mobileMenu && styles.navMobileActive}`
+        }>
+        <NavLink to="/conta" end activeClassName={styles.active}>
+          <MinhasFotos /> {mobile && "Minhas Fotos"}{" "}
+        </NavLink>
+        <NavLink to="/conta/estatisticas" activeClassName={styles.active}>
+          <Estatisticas />
+          {mobile && "Estatísticas"}
+        </NavLink>
+        <NavLink to="/conta/postar" activeClassName={styles.active}>
+          <AdicionarFoto />
+          {mobile && "Adicionar Foto"}
+        </NavLink>
+        <button onClick={userLogout}>
+          <Sair />
+          {mobile && "Sair"}
+        </button>
+      </nav>
+    </>
   );
 }
