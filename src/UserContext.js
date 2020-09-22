@@ -34,7 +34,7 @@ export  const UserStorage = ({children}) => {
           const res = await fetch(url, options);
           const json = await res.json();
           if(!res.ok) throw new Error('Token inválido')
-          console.log(json);
+          // console.log(json);
           await getUser(token)
         } catch (error) {
           console.log('DEU RUIM AUTO LOGIN',error);

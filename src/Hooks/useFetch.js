@@ -13,6 +13,7 @@ export default function useFetch() {
       setLoading(true)
       res = await fetch(url, options)
       json = await res.json()
+      console.log(json);
       if(res.ok === false) throw new Error(json.message) 
     } catch (error) {
       json = null
