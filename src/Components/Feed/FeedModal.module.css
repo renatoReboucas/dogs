@@ -1,4 +1,4 @@
-.modal{
+.modal {
   position: fixed;
   width: 100vw;
   height: 100vh;
@@ -10,8 +10,8 @@
   padding: 2rem calc(4rem + 15px) 2rem 4rem;
 }
 
-@media(max-width: 40rem){
-  .modal{
+@media (max-width: 40rem) {
+  .modal {
     padding: 2rem calc(2rem + 15px) 2rem 2rem;
   }
 }
